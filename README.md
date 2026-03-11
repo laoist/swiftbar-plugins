@@ -20,3 +20,5 @@ git clone https://github.com/laoist/swiftbar-plugins ~/Library/Application\ Supp
 
 Displays the currently playing Tidal track in the menu bar. Shows album art,
 artist, title, album, and a live progress bar in a popover on click.
+
+![Now Playing](/.github/screenshots/nowplaying.png)
