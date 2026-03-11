@@ -14,7 +14,12 @@
 # <swiftbar.hideDisablePlugin>true</swiftbar.hideDisablePlugin>
 # <swiftbar.hideSwiftBar>true</swiftbar.hideSwiftBar>
 
-import sys, json, os, re, subprocess, traceback
+import json
+import os
+import re
+import subprocess
+import sys
+import traceback
 from html import escape
 
 
@@ -31,7 +36,7 @@ def fmt_time(s):
 
 
 try:
-    result = subprocess.run(
+    result = subprocess.run(  # noqa: S603
         ['/opt/homebrew/bin/media-control', 'get'],
         capture_output=True, text=True, timeout=3
     )

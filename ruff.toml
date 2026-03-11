@@ -1,0 +1,15 @@
+target-version = "py313"
+line-length = 120
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "S",   # flake8-bandit (security)
+]
+
+[lint.per-file-ignores]
+"**/*.py" = [
+    "S404",  # subprocess module import — trusted use
+]
