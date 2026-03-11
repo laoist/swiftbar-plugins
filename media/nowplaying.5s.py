@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env python3
 
 # <xbar.title>Now Playing</xbar.title>
 # <xbar.version>v1.0</xbar.version>
@@ -14,31 +14,54 @@
 # <swiftbar.hideDisablePlugin>true</swiftbar.hideDisablePlugin>
 # <swiftbar.hideSwiftBar>true</swiftbar.hideSwiftBar>
 
-# Timeout prevents the plugin hanging if media-control stalls
-output=$(timeout 3 /opt/homebrew/bin/media-control get 2>/dev/null)
-
-if [ $? -ne 0 ]; then
-    echo "♫ | color=#555555"
-    echo "---"
-    echo "media-control timed out or failed"
-    exit 0
-fi
-
-if [ -z "$output" ] || [ "$output" = "null" ]; then
-    echo "♫ | color=#555555"
-    exit 0
-fi
-
-/usr/bin/python3 - <<'PYEOF' "$output"
-import sys, json, os, re, traceback
+import sys, json, os, re, subprocess, traceback
 from html import escape
+
 
 def placeholder():
     print("♫ | color=#555555")
     sys.exit(0)
 
+
+def fmt_time(s):
+    if not s:
+        return '0:00'
+    s = int(s)
+    return f"{s // 60}:{s % 60:02d}"
+
+
 try:
-    d = json.loads(sys.argv[1])
+    result = subprocess.run(
+        ['/opt/homebrew/bin/media-control', 'get'],
+        capture_output=True, text=True, timeout=3
+    )
+    if result.returncode != 0:
+        print("♫ | color=#555555")
+        print("---")
+        print("media-control failed")
+        sys.exit(0)
+    output = result.stdout.strip()
+except subprocess.TimeoutExpired:
+    print("♫ | color=#555555")
+    print("---")
+    print("media-control timed out")
+    sys.exit(0)
+except Exception:
+    print("♫ | color=#555555")
+    print("---")
+    print("media-control failed")
+    sys.exit(0)
+
+if not output or output == 'null':
+    placeholder()
+
+try:
+    d = json.loads(output)
+
+    # Add bundle identifiers here to show output from other sources
+    ALLOWED_SOURCES = {'com.tidal.desktop'}
+    if d.get('bundleIdentifier') not in ALLOWED_SOURCES:
+        placeholder()
 
     if not d.get('playing') or not d.get('title'):
         placeholder()
@@ -67,12 +90,6 @@ try:
     artwork = d.get('artworkData', '')
     if artwork and not re.match(r'^[A-Za-z0-9+/=\n]+$', artwork):
         artwork = ''
-
-    def fmt_time(s):
-        if not s:
-            return '0:00'
-        s = int(s)
-        return f"{s // 60}:{s % 60:02d}"
 
     duration_fmt = fmt_time(duration)
     progress_pct = (elapsed / duration * 100) if duration else 0
@@ -238,6 +255,3 @@ except Exception:
     print("nowplaying error:")
     for line in traceback.format_exc().splitlines():
         print(line)
-
-PYEOF
-
