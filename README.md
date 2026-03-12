@@ -6,6 +6,7 @@ Personal SwiftBar plugins for macOS.
 
 - [SwiftBar](https://github.com/swiftbar/SwiftBar) — `brew install swiftbar`
 - [media-control](https://github.com/ungive/media-control) — `brew tap ungive/media-control && brew install media-control`
+- [SF Symbols](https://developer.apple.com/sf-symbols/) — `brew install --cask sf-symbols` (optional, for browsing icon names)
 
 ## Setup
 
@@ -25,6 +26,7 @@ Or use [GNU Stow](https://www.gnu.org/software/stow/) to manage symlinks for the
 
 ```sh
 stow --dir ~/git/swiftbar-plugins --target ~/Library/Application\ Support/SwiftBar/Plugins media
+stow --dir ~/git/swiftbar-plugins --target ~/Library/Application\ Support/SwiftBar/Plugins peripherals
 ```
 
 ## Plugins
@@ -44,3 +46,12 @@ artist, title, album, and a live progress bar in a popover on click.
 >```
 
 ![Now Playing](/.github/screenshots/nowplaying.png)
+
+### peripherals/mouse_battery.5m.py
+
+Displays the MX Master 3 battery percentage in the menu bar. Hidden when the
+mouse is not connected.
+
+>[!NOTE]
+>To monitor a different device, update `DEVICE_NAME` at the top of the script
+>to match the name shown by `pmset -g accps`.
