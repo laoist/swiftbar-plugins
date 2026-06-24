@@ -16,13 +16,13 @@ jobs:
   ruff:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: astral-sh/ruff-action@v3
 
   markdownlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: DavidAnson/markdownlint-cli2-action@v23
         with:
           globs: "**/*.md"
@@ -30,5 +30,5 @@ jobs:
   cspell:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: streetsidesoftware/cspell-action@v8
